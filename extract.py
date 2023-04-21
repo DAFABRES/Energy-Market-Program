@@ -20,12 +20,39 @@ def sell(energy_amt, energy_type):
     else:
         print("unable to purchase")
 
+i = 0
+choice = 0
+while i < 1:
+    action = input("Would you like to buy, sell or quit?")
+    if action == "buy":
+        energy = input("which energy would you like to buy?")
+        if energy == "solar":
+            choice = 0
+        elif energy == "wind":
+            choice = 1
+        else:
+            print("invalid input")
+        amount = input("How much would you like to buy?")
+        purchase(int(amount), choice)
+        display(df)
+    elif action == "sell":
+        energy = input("which energy would you like to sell?")
+        if energy == "solar":
+            choice = 0
+        elif energy == "wind":
+            choice = 1
+        else:
+            print("invalid input")
+        amount = input("How much would you like to sell?")
+        sell(int(amount), choice)
+        display(df)
+    elif action == "quit":
+        i = i + 1
+        display(df)
 
-
-
-purchase(25, 1)
-sell(25, 1)
+#purchase(25, 1)
+#sell(25, 1)
 
 #display(df['Sales Limit'][0])
 
-display(df)
+#display(df)
