@@ -11,7 +11,11 @@ def purchase(energy_amt, energy_type):
         df["Available Energy"][energy_type] =  df["Available Energy"][energy_type] + energy_amt # adds to our storage
         df["Money"][0] = df["Money"][0] - (df['Price per unit (kwh)'][energy_type] * energy_amt) #money counter
         df['Daily Limit'][0] =  df['Daily Limit'][0] - energy_amt #daily counter
+        
+        # add transaction details to transaction_history DataFrame
         transaction_history.loc[len(transaction_history)] = ['Purchase', df['Energy Type'][energy_type], energy_amt]
+
+        # write both DataFrames to the excel file
         with pd.ExcelWriter('energy market.xlsx') as writer:
             df.to_excel(writer, sheet_name='Energy Market', index=False)
             transaction_history.to_excel(writer, sheet_name='Transaction History', index=False)
@@ -65,7 +69,6 @@ while i < 1:
         amount = input("How much would you like to buy?")
         #def here to check if limit is reached 
         trade(int(amount),action, choice)
-        #purchase(int(amount), choice)
         print(df)
     elif action == "sell":
         print(df)
@@ -79,7 +82,6 @@ while i < 1:
         amount = input("How much would you like to sell?")
         #def here to check if limit is reached
         trade(int(amount),action, choice)
-        #sell(int(amount), choice)
         print(df)
     elif action == "quit":
         print(transaction_history)
