@@ -5,12 +5,10 @@ df = pd.read_excel('energy market.xlsx')
 
 def purchase(energy_amt, energy_type):
     if df['Available Energy'][energy_type] > 0:
-        new_limit = df['Available Energy'][energy_type] - energy_amt
-        df['Available Energy'][energy_type] = new_limit
-        new_money = df['Price per unit (kwh)'][energy_type] * energy_type #money counter
-        df["Money"][0] = df["Money"][0] - new_money
-        new_daily =  df['Daily Limit'][0] - energy_amt #daily counter
-        df['Daily Limit'][0] = new_daily 
+        df['Sales Limit'][energy_type] = df['Sales Limit'][energy_type] - energy_amt #takes from sales limit
+        df["Available Energy"][energy_type] =  df["Available Energy"][energy_type] + energy_amt # adds to our storage
+        df["Money"][0] = df["Money"][0] - (df['Price per unit (kwh)'][energy_type] * energy_amt) #money counter
+        df['Daily Limit'][0] =  df['Daily Limit'][0] - energy_amt #daily counter
         df.to_excel('energy market.xlsx', index=False)
 
     else:
@@ -18,18 +16,17 @@ def purchase(energy_amt, energy_type):
 
 def sell(energy_amt, energy_type):
     if df['Available Energy'][energy_type] < df['Sales Limit'][energy_type]:
-        new_limit = df['Available Energy'][energy_type] + energy_amt
-        df['Available Energy'][energy_type] = new_limit
-        new_money = df['Price per unit (kwh)'][energy_type] * energy_type #money counter
-        df["Money"][0] = new_money + df["Money"][0]
-        new_daily =  df['Daily Limit'][0] - energy_amt  #daily counter
-        df['Daily Limit'][0] = new_daily
+        df['Available Energy'][energy_type] = df['Available Energy'][energy_type] + energy_amt  #adds to sales limit
+        df["Available Energy"][energy_type] = df["Available Energy"][energy_type] - energy_type #takes from our storage
+        df["Money"][0] = df["Money"][0] + (df['Price per unit (kwh)'][energy_type] * energy_amt) #money counter
+        df['Daily Limit'][0] =  df['Daily Limit'][0] - energy_amt  #daily counter
         df.to_excel('energy market.xlsx', index=False)
     else:
         print("unable to purchase")
 
+#should check if trade is possible, needs work
 def trade(energy_amt, action: str, choice):
-    if (df['Daily Limit'][0] - energy_amt == 0):
+    if df["Daily Limit"][0] - energy_amt == 0: 
         print("You have reached the daily limit of 100kw per day due to FERC limitations, you can continue trading the next market cylcle")
     else:
         if action == 'buy':
@@ -53,7 +50,7 @@ while i < 1:
             print("invalid input")
         amount = input("How much would you like to buy?")
         #def here to check if limit is reached 
-        trade(amount,action, choice)
+        trade(int(amount),action, choice)
         #purchase(int(amount), choice)
         print(df)
     elif action == "sell":
@@ -66,7 +63,7 @@ while i < 1:
             print("invalid input")
         amount = input("How much would you like to sell?")
         #def here to check if limit is reached
-        trade(amount,action, choice)
+        trade(int(amount),action, choice)
        # sell(int(amount), choice)
         print(df)
     elif action == "quit":
