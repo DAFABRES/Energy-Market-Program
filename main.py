@@ -26,7 +26,7 @@ def sell(energy_amt, energy_type):
 
 #should check if trade is possible, needs work
 def trade(energy_amt, action: str, choice):
-    if df["Daily Limit"][0] - energy_amt == 0: 
+    if (df["Daily Limit"][0] - energy_amt) < 0: 
         print("You have reached the daily limit of 100kw per day due to FERC limitations, you can continue trading the next market cylcle")
     else:
         if action == 'buy':
@@ -54,6 +54,7 @@ while i < 1:
         #purchase(int(amount), choice)
         print(df)
     elif action == "sell":
+        print(df)
         energy = input("which energy would you like to sell?")
         if energy == "solar":
             choice = 0
@@ -64,7 +65,7 @@ while i < 1:
         amount = input("How much would you like to sell?")
         #def here to check if limit is reached
         trade(int(amount),action, choice)
-       # sell(int(amount), choice)
+        #sell(int(amount), choice)
         print(df)
     elif action == "quit":
         i = i + 1
