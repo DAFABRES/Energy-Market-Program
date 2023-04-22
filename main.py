@@ -5,7 +5,7 @@ import pandas as pd
 def open_market():
     # Load the initial market data from the Excel file
     #df = pd.read_excel('energy market.xlsx', sheet_name='Sheet1')
-    
+    df["Daily Limit"][0] = 100
     # Update the available energy and sales limit columns in the main dataframe with the initial values
     for i, row in df.iterrows():
         energy_type = row['Energy Type']
