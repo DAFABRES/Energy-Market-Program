@@ -2,6 +2,8 @@
 import pandas as pd
 
 df = pd.read_excel('energy market.xlsx')
+transaction_history = pd.DataFrame(columns=['Transaction Type', 'Energy Type', 'Units'])
+
 
 def purchase(energy_amt, energy_type):
     if df['Available Energy'][energy_type] > 0:
@@ -9,6 +11,10 @@ def purchase(energy_amt, energy_type):
         df["Available Energy"][energy_type] =  df["Available Energy"][energy_type] + energy_amt # adds to our storage
         df["Money"][0] = df["Money"][0] - (df['Price per unit (kwh)'][energy_type] * energy_amt) #money counter
         df['Daily Limit'][0] =  df['Daily Limit'][0] - energy_amt #daily counter
+        transaction_history.loc[len(transaction_history)] = ['Purchase', df['Energy Type'][energy_type], energy_amt]
+        with pd.ExcelWriter('energy market.xlsx') as writer:
+            df.to_excel(writer, sheet_name='Energy Market', index=False)
+            transaction_history.to_excel(writer, sheet_name='Transaction History', index=False)
         df.to_excel('energy market.xlsx', index=False)
 
     else:
@@ -20,6 +26,14 @@ def sell(energy_amt, energy_type):
         df["Available Energy"][energy_type] = df["Available Energy"][energy_type] - energy_type #takes from our storage
         df["Money"][0] = df["Money"][0] + (df['Price per unit (kwh)'][energy_type] * energy_amt) #money counter
         df['Daily Limit'][0] =  df['Daily Limit'][0] - energy_amt  #daily counter
+        
+        # add transaction details to transaction_history DataFrame
+        transaction_history.loc[len(transaction_history)] = ['Sell', df['Energy Type'][energy_type], energy_amt]
+
+         # write both DataFrames to the excel file
+        with pd.ExcelWriter('energy market.xlsx') as writer:
+            df.to_excel(writer, sheet_name='Energy Market', index=False)
+            transaction_history.to_excel(writer, sheet_name='Transaction History', index=False)
         df.to_excel('energy market.xlsx', index=False)
     else:
         print("unable to purchase")
@@ -68,5 +82,5 @@ while i < 1:
         #sell(int(amount), choice)
         print(df)
     elif action == "quit":
+        print(transaction_history)
         i = i + 1
-        print(df)
