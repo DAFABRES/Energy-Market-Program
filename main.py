@@ -50,8 +50,8 @@ def purchase(energy_amt, energy_type):
 ########################################################################
 def sell(energy_amt, energy_type):
     if df['Available Energy'][energy_type] < df['Sales Limit'][energy_type]:
-        df['Available Energy'][energy_type] = df['Available Energy'][energy_type] + energy_amt  #adds to sales limit
-        df["Available Energy"][energy_type] = df["Available Energy"][energy_type] - energy_type #takes from our storage
+        df['Sales Limit'][energy_type] = df['Sales Limit'][energy_type] + energy_amt  #adds to sales limit
+        df["Available Energy"][energy_type] = df["Available Energy"][energy_type] - energy_amt #takes from our storage
         df["Money"][0] = df["Money"][0] + (df['Price per unit (kwh)'][energy_type] * energy_amt) #money counter
         df['Daily Limit'][0] =  df['Daily Limit'][0] - energy_amt  #daily counter
         
